@@ -1,6 +1,9 @@
 #include <Arduino.h>
+const int PS2DataPin = D3;
+const int PS2IRQpin  = D2;
 #define FREQUENCY    160   
 #include "ESP8266WiFi.h"
+#include <PS2Keyboard.h>
 
 extern "C" {
 #include "user_interface.h"
@@ -27,7 +30,10 @@ extern "C" {
   void videoinit();
   }
 
+PS2Keyboard keyboard;
+
 void setup() {
+  keyboard.begin(PS2DataPin, PS2IRQpin, PS2Keymap_German);
   WiFi.forceSleepBegin();             
   delay(1);                               
   system_update_cpu_freq(FREQUENCY);
@@ -37,7 +43,9 @@ void setup() {
 
 void loop() {  
   exec6502(100);
-  RAM[198]=1;  //Poke a "A" into the keyboard buffer
-  RAM[631]=65; 
-
+  if (keyboard.available()) {
+    char c = keyboard.read();
+    RAM[198]=1;
+    RAM[631]=c;
+  }
 }
