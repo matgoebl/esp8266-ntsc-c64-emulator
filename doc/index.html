@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<body>
+  [this is a copy of the original page at
+  https://www.hackster.io/janost/esp8266-ntsc-c64-emulator-b91a35
+  published under GPL3+]
+  <h1>ESP8266 NTSC C64 Emulator</h1>
+  <p>A C64 emulator on the ESP8266 with NTSC output.</p>
+  <p>Author: <a href="https://www.hackster.io/janost/">Jan
+  Ostman</a></p>
+  <p>Published November 12, 2018 on <a href=
+  "https://www.hackster.io/janost/esp8266-ntsc-c64-emulator-b91a35">
+  https://www.hackster.io/janost/esp8266-ntsc-c64-emulator-b91a35</a>
+  under <a href=
+  "http://opensource.org/licenses/GPL-3.0">GPL3+</a>.</p><img src=
+  "img_20180303_021351_joZ1dKHxJP.jpg">
+  <h2>Things used in this project</h2>
+  <h3>Hardware components</h3><a href=
+  "https://www.hackster.io/esp/products/wemos-d1-mini">Everything
+  ESP Wemos D1 Mini</a>
+  <h2>Story</h2>
+  <p>Can you run a C64 emulation with 40x25 text composite video on
+  a Wemos D1 Mini without additional components?</p>
+  <p>The CPU emulator is a port of Mike Chambers 6502. And the
+  composite video is based on the work of <a href=
+  'https://github.com/cnlohr'>Cnlohr</a> and <a href=
+  'https://github.com/hrvach/espple'>Hrvoje Cavrak</a></p><img src=
+  "esp8266_cbvs.jpg">
+  <p>The video is output using DMA i2s and uses only about 10% of
+  the CPU.The components makes a lowpass filter at 7MHz and a
+  correct NTSC CVBS signal.</p>
+  <p>The video has a resolution of 320x200 and is a subset of the
+  upcoming ESP8266 TVout library.</p>
+  <p>Here is the source code for the C64 emulator.</p>
+  <p>These files are required for compiling it on the
+  Arduino-IDE:</p><img src="c64files_4S64LG0R0i.jpg">
+  <p>(A ZIP-file with the source code is attached for download)
+  [copied into this repository]</p><img src=
+  "untitled_zuMI9RHZkK_small.png">
+  <p>The emulation has 16K free RAM for basic and only support for
+  the 40x25 text mode.</p>
+  <p>Keyboard code needs to be added and keys typed poked into the
+  keyboard buffer.</p>
+  <p>Otherwise it is fully functional.</p>
+  <p>Have fun!</p>
+  <p>11/12/2018 update:</p>
+  <p>I'm in the process of porting my emulators to the ESP32.</p>
+  <p>It has better native support for memory and video.</p>
+</body>
+</html>
