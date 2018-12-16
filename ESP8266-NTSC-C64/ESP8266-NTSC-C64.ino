@@ -10,8 +10,7 @@ const int PS2IRQpin  = D2;
 
 extern "C" {
 #include "user_interface.h"
-void exec6502(int32_t tickcount);
-void reset6502();
+#include "cpu.h"
 }
 
 
@@ -154,7 +153,9 @@ void setup() {
 }
 
 void loop() {  
-  exec6502(100);
+  if (!debug) {
+    exec6502(100);
+  }
   if (keyboard.available()) {
     char c = keyboard.readUnicode();
     if (debug) {
@@ -165,8 +166,8 @@ void loop() {
     } else if (c == HOTKEY_SHIFT_ESC) {
       reset6502();
     } else {
-      RAM[198]=1;
-      RAM[631]=c;
+      write6502(addr_keybuf_len,1);
+      write6502(addr_keybuf,c);
     }
   }
 #if defined(WIFI_SSID) && defined(WIFI_PSK)

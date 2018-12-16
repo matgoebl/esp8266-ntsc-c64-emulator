@@ -12,6 +12,7 @@
 #include "user_interface.h"
 #include "pin_mux_register.h"
 #include "dmastuff.h"
+#include "cpu.h"
 
 #define WS_I2S_BCK 1
 #define WS_I2S_DIV 2
@@ -102,7 +103,8 @@ LOCAL void slc_isr(void) {
                 
                 #ifdef XRES320
                         uint8_t pixel_column = 30;
-                        uint8_t *video_line = &screenmem[(current_pixel_line>>3)*40];
+                        uint8_t y = current_pixel_line>>3;
+                        uint8_t *video_line = &screenmem[y*40];
                         uint8_t *char_rom = &charROM[0];
                                             
                         //buffer_pointer[17]=colorburst1;
@@ -118,8 +120,13 @@ LOCAL void slc_isr(void) {
                         {
 
                                 /* encode each 32bit word for the video bytes */ 
-                                uint8_t charbyte = video_line[x];                            
+                                uint8_t charbyte = video_line[x];
                                 uint8_t gfxbyte = char_rom[(current_pixel_line&0x07)+(charbyte<<3)];
+                                if (read6502(addr_cursor_x) == x &&
+                                    read6502(addr_cursor_y) == y &&
+                                    read6502(addr_cursor_flash) == 0 ) {
+                                      gfxbyte^=0xff;
+                                    }
                                 uint32_t character = 0x88888888;
                                 if (gfxbyte&128) character |= 0xfff00000;
                                 if (gfxbyte&64) character |=  0x000fff00;
