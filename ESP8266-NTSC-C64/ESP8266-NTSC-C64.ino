@@ -1,8 +1,11 @@
 #include <Arduino.h>
 const int PS2DataPin = D3;
 const int PS2IRQpin  = D2;
+#include "wifi_credentials.h"
 #define FREQUENCY    160   
 #include "ESP8266WiFi.h"
+#include <ESP8266WiFiMulti.h>
+#include <ArduinoOTA.h>
 #include <PS2Keyboard.h>
 
 extern "C" {
@@ -124,6 +127,9 @@ const PROGMEM PS2Keymap_t PS2Keymap_German_c64 = {
 
 
 bool debug=false;
+bool wifi_connected=false;
+
+ESP8266WiFiMulti WiFiMulti;
 
 void setup() {
   system_update_cpu_freq(FREQUENCY);
@@ -133,6 +139,12 @@ void setup() {
   if (debug) {
     Serial.begin(115200);
     Serial.println("\r\n\r\nDebug mode, ESP ID: " + String(ESP.getChipId(), HEX));
+#if defined(WIFI_SSID) && defined(WIFI_PSK)
+    WiFi.mode(WIFI_STA);
+    WiFiMulti.addAP(WIFI_SSID, WIFI_PSK);
+    WiFi.hostname("ESP8266-" + String(ESP.getChipId(), HEX));
+    ArduinoOTA.begin();
+#endif
   } else {
     WiFi.forceSleepBegin();             
     delay(1);
@@ -157,4 +169,15 @@ void loop() {
       RAM[631]=c;
     }
   }
+#if defined(WIFI_SSID) && defined(WIFI_PSK)
+  if (debug) {
+    if (!wifi_connected && WiFiMulti.run() == WL_CONNECTED) {
+      Serial.print("IP address: ");
+      Serial.println(WiFi.localIP());
+      wifi_connected = true;
+    }
+    ArduinoOTA.handle();
+    yield();
+  }
+#endif
 }
