@@ -8,12 +8,30 @@ const int PS2IRQpin  = D2;
 #include <ArduinoOTA.h>
 #include <PS2Keyboard.h>
 
+#include "prg/hello-world.h"
+
+
 extern "C" {
 #include "user_interface.h"
 #include "cpu.h"
 }
 
 
+
+
+void load_prg(const uint8_t *data, uint16_t len) {
+  uint16_t ptr = 0;
+  uint16_t addr = (uint16_t)pgm_read_byte(data + ptr++) + 0x100 * pgm_read_byte(data + ptr++);
+  while (ptr < len) {
+    write6502(addr + ptr - 2, pgm_read_byte(data + ptr));
+    ++ptr;
+  }
+  // see mem_set_basic_text() at https://github.com/stuartcarnie/vice-emu/blob/238d23b8b7e4fe3b6077273d0c99b1d8c3fc0b8c/vice/src/autostart-prg.c
+  uint16_t end = addr + ptr - 2;
+  uint8_t lo = end & 0xff, hi = end >> 8;
+  write6502(0x2d, lo); write6502(0x2f, lo); write6502(0x31, lo); write6502(0xae, lo);
+  write6502(0x2e, hi); write6502(0x30, hi); write6502(0x32, hi); write6502(0xaf, hi);
+}
 
 
 //CBM Textset1 ROM
@@ -30,6 +48,7 @@ uint8_t VIC_D021;
 
 extern "C" {
   void videoinit();
+  void videostop();
   }
 
 
@@ -135,9 +154,9 @@ void setup() {
   keyboard.begin(PS2DataPin, PS2IRQpin, PS2Keymap_German_c64);
   delay(500);
   debug = keyboard.available() && keyboard.readUnicode() == HOTKEY_ESC;
+  Serial.begin(115200);
+  Serial.println("\r\n\r\nDebug mode, ESP ID: " + String(ESP.getChipId(), HEX));
   if (debug) {
-    Serial.begin(115200);
-    Serial.println("\r\n\r\nDebug mode, ESP ID: " + String(ESP.getChipId(), HEX));
 #if defined(WIFI_SSID) && defined(WIFI_PSK)
     WiFi.mode(WIFI_STA);
     WiFiMulti.addAP(WIFI_SSID, WIFI_PSK);
@@ -148,8 +167,8 @@ void setup() {
     WiFi.forceSleepBegin();             
     delay(1);
     videoinit();
+    reset6502();
   }
-  reset6502(); 
 }
 
 void loop() {  
@@ -161,10 +180,29 @@ void loop() {
     if (debug) {
       Serial.println("Key: " + String(c, DEC));
     }
+
+    if (c == PS2_UPARROW) {
+      c = C64_UP;
+    } else if (c == PS2_DOWNARROW) {
+      c = C64_DOWN;
+    } else if (c == PS2_LEFTARROW) {
+      c = C64_LEFT;
+    } else if (c == PS2_RIGHTARROW) {
+      c = C64_RIGHT;
+    }
+    
     if (c == HOTKEY_SCROLL) {
+      videostop();
       ESP.restart();
+    } else if (c == HOTKEY_ESC) {
+      nmi6502();
     } else if (c == HOTKEY_SHIFT_ESC) {
       reset6502();
+    } else if (c == HOTKEY_F9) {
+        load_prg(hello_world_prg,hello_world_prg_len);
+    } else if (c == HOTKEY_F10) {
+    } else if (c == HOTKEY_F11) {
+    } else if (c == HOTKEY_F12) {
     } else {
       write6502(addr_keybuf_len,1);
       write6502(addr_keybuf,c);

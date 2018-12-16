@@ -357,5 +357,9 @@ void ICACHE_FLASH_ATTR videoinit() {
         SET_PERI_REG_MASK(I2SCONF,I2S_I2S_TX_START);
 }
 
+void ICACHE_FLASH_ATTR videostop() {
+  ets_isr_mask(1<<ETS_SLC_INUM);
+}
+
 
 #define BASEFREQ (160000000L)
