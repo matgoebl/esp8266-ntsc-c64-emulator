@@ -30,22 +30,131 @@ extern "C" {
   void videoinit();
   }
 
+
 PS2Keyboard keyboard;
 
+// see http://sta.c64.org/cbm64petkey.html and https://www.c64-wiki.com/wiki/Keyboard
+#define C64_STOP           3
+#define C64_RETURN        13
+#define C64_DOWN          17
+#define C64_HOME          19
+#define C64_DELETE        20
+#define C64_RIGHT         29
+#define C64_RUN          131
+#define C64_F1           133
+#define C64_F3           134
+#define C64_F5           135
+#define C64_F7           136
+#define C64_F2           137
+#define C64_F4           138
+#define C64_F6           139
+#define C64_F8           140
+#define C64_SHIFT_RETURN 141
+#define C64_UP           145
+#define C64_CLEAR        147
+#define C64_INSERT       148
+#define C64_LEFT         157
+
+#define HOTKEY_F9        248
+#define HOTKEY_F10       249
+#define HOTKEY_F11       250
+#define HOTKEY_F12       251
+#define HOTKEY_SCROLL    252
+#define HOTKEY_ESC       253
+#define HOTKEY_SHIFT_ESC 254
+#define HOTKEY_NUMLOCK   255
+
+const PROGMEM PS2Keymap_t PS2Keymap_German_c64 = {
+  // without shift
+  {0, HOTKEY_F9, 0, C64_F5, C64_F3, C64_F1, C64_F2, HOTKEY_F12,
+  0, HOTKEY_F10, C64_F8, C64_F6, C64_F4, C64_RUN /*PS2_TAB*/, '^', 0,
+  0, 0 /*Lalt*/, 0 /*Lshift*/, 0, 0 /*Lctrl*/, 'Q', '1', 0,
+  0, 0, 'Y', 'S', 'A', 'W', '2', 0,
+  0, 'C', 'X', 'D', 'E', '4', '3', 0,
+  0, ' ', 'V', 'F', 'T', 'R', '5', 0,
+  0, 'N', 'B', 'H', 'G', 'Z', '6', 0,
+  0, 0, 'M', 'J', 'U', '7', '8', 0,
+  0, ',', 'K', 'I', 'O', '0', '9', 0,
+  0, '.', '-', 'L', PS2_o_DIAERESIS, 'P', PS2_SHARP_S, 0,
+  0, 0, PS2_a_DIAERESIS, 0, PS2_u_DIAERESIS, '\'', 0, 0,
+  0 /*CapsLock*/, 0 /*Rshift*/, C64_RETURN /*PS2_ENTER*/ /*Enter*/, '+', 0, '#', 0, 0,
+  0, '<', 0, 0, 0, 0, C64_DELETE /*PS2_BACKSPACE*/, 0,
+  0, '1', 0, '4', '7', 0, 0, 0,
+  '0', '.', '2', '5', '6', '8', HOTKEY_ESC, HOTKEY_NUMLOCK /*NumLock*/,
+  HOTKEY_F11, '+', '3', '-', '*', '9', HOTKEY_SCROLL, 0,
+  0, 0, 0, C64_F7 },
+  // with shift
+  {0, HOTKEY_F9, 0, C64_F5, C64_F3, C64_F1, C64_F2, HOTKEY_F12,
+  0, HOTKEY_F10, C64_F8, C64_F6, C64_F4, C64_STOP /*PS2_TAB*/, PS2_DEGREE_SIGN, 0,
+  0, 0 /*Lalt*/, 0 /*Lshift*/, 0, 0 /*Lctrl*/, 'q', '!', 0,
+  0, 0, 'y', 's', 'a', 'w', '"', 0,
+  0, 'c', 'x', 'd', 'e', '$', PS2_SECTION_SIGN, 0,
+  0, ' ', 'v', 'f', 't', 'r', '%', 0,
+  0, 'n', 'b', 'h', 'g', 'z', '&', 0,
+  0, 0, 'm', 'j', 'u', '/', '(', 0,
+  0, ';', 'k', 'i', 'o', '=', ')', 0,
+  0, ':', '_', 'l', PS2_O_DIAERESIS, 'p', '?', 0,
+  0, 0, PS2_A_DIAERESIS, 0, PS2_U_DIAERESIS, '`', 0, 0,
+  0 /*CapsLock*/, 0 /*Rshift*/, C64_SHIFT_RETURN /*PS2_ENTER*/ /*Enter*/, '*', 0, '\'', 0, 0,
+  0, '>', 0, 0, 0, 0, C64_DELETE /*PS2_BACKSPACE*/, 0,
+  0, '1', 0, '4', '7', 0, 0, 0,
+  '0', '.', '2', '5', '6', '8', HOTKEY_SHIFT_ESC, HOTKEY_NUMLOCK /*NumLock*/,
+  HOTKEY_F11, '+', '3', '-', '*', '9', HOTKEY_SCROLL, 0,
+  0, 0, 0, C64_F7 },
+  1,
+  // with altgr
+  {0, HOTKEY_F9, 0, C64_F5, C64_F3, C64_F1, C64_F2, HOTKEY_F12,
+  0, HOTKEY_F10, C64_F8, C64_F6, C64_F4, C64_RUN /*PS2_TAB*/, 0, 0,
+  0, 0 /*Lalt*/, 0 /*Lshift*/, 0, 0 /*Lctrl*/, '@', 0, 0,
+  0, 0, 0, 0, 0, 0, PS2_SUPERSCRIPT_TWO, 0,
+  0, 0, 0, 0, PS2_CURRENCY_SIGN, 0, PS2_SUPERSCRIPT_THREE, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, PS2_MICRO_SIGN, 0, 0, '{', '[', 0,
+  0, 0, 0, 0, 0, '}', ']', 0,
+  0, 0, 0, 0, 0, 0, '\\', 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0 /*CapsLock*/, 0 /*Rshift*/, C64_RETURN /*PS2_ENTER*/ /*Enter*/, '~', 0, '#', 0, 0,
+  0, '|', 0, 0, 0, 0, C64_DELETE /*PS2_BACKSPACE*/, 0,
+  0, '1', 0, '4', '7', 0, 0, 0,
+  '0', '.', '2', '5', '6', '8', HOTKEY_ESC, HOTKEY_NUMLOCK /*NumLock*/,
+  HOTKEY_F11, '+', '3', '-', '*', '9', HOTKEY_SCROLL, 0,
+  0, 0, 0, C64_F7 }
+};
+
+
+bool debug=false;
+
 void setup() {
-  keyboard.begin(PS2DataPin, PS2IRQpin, PS2Keymap_German);
-  WiFi.forceSleepBegin();             
-  delay(1);                               
   system_update_cpu_freq(FREQUENCY);
-  videoinit();
-  reset6502(); 
+  keyboard.begin(PS2DataPin, PS2IRQpin, PS2Keymap_German_c64);
+  delay(500);
+  debug = keyboard.available() && keyboard.readUnicode() == HOTKEY_ESC;
+  if (debug) {
+    Serial.begin(115200);
+    Serial.println("\r\n\r\nDebug mode, ESP ID: " + String(ESP.getChipId(), HEX));
+  } else {
+    WiFi.forceSleepBegin();             
+    delay(1);
+    videoinit();
   }
+  reset6502(); 
+}
 
 void loop() {  
   exec6502(100);
   if (keyboard.available()) {
-    char c = keyboard.read();
-    RAM[198]=1;
-    RAM[631]=c;
+    char c = keyboard.readUnicode();
+    if (debug) {
+      Serial.println("Key: " + String(c, DEC));
+    }
+    if (c == HOTKEY_SCROLL) {
+      ESP.restart();
+    } else if (c == HOTKEY_SHIFT_ESC) {
+      reset6502();
+    } else {
+      RAM[198]=1;
+      RAM[631]=c;
+    }
   }
 }
