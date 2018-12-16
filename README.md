@@ -8,3 +8,16 @@ Enhancements by Matthias Goebl at https://github.com/matgoebl/esp8266-ntsc-c64-e
 - PS/2 keyboard input with hotkeys for reset and serial debugging
 - Cursor display
 - Wifi and OTA update
+- Load compiled-in PRGs
+
+## How to compile-in PRGs
+- create e.g. hello-world.bas
+- compile basic source into token: `petcat -w2 -o hello-world.prg hello-world.bas` (petcat comes with [http://vice-emu.sourceforge.net/](VICE))
+- convert binary into a C include file: `xxd -i hello-world.prg > hello-world.h`
+- adapt hello-world.h: change `unsigned char` into `const PROGMEM unsigned char`
+
+## Limitations
+This simple emulator is a proof-of-concept.
+It only emulates the 6502 CPU of a C64 with basic video output.
+It lacks emulation of the SID chip for sound output and the VIC chip for sprites and graphics output.
+Therefore it is only suitable for playing with commodore basic.
