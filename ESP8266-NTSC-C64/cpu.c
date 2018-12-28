@@ -6,7 +6,7 @@
 #define RAM_SIZE 16384
 extern uint8_t screenmem[1000];
 extern uint8_t colormem[1000];
-extern uint8_t RAM[RAM_SIZE];
+extern uint8_t *RAM;
 extern uint8_t VIC_D020;
 extern uint8_t VIC_D021;
 

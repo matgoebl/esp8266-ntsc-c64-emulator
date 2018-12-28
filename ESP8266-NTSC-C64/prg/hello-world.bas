@@ -1,2 +1,3 @@
-10 print "hello world."
-20 goto 10
+10 for i=1 to 10
+20 print "hello world!",i
+30 next

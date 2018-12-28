@@ -1,6 +1,7 @@
 #include <Arduino.h>
 const int PS2DataPin = D3;
 const int PS2IRQpin  = D2;
+const int AudioPin = D1;
 #include "wifi_credentials.h"
 #define FREQUENCY    160   
 #include "ESP8266WiFi.h"
@@ -16,6 +17,12 @@ extern "C" {
 #include "cpu.h"
 }
 
+void beep(int frequency, int duration = 100) {
+  analogWriteFreq(frequency);
+  analogWrite(AudioPin, PWMRANGE / 2);
+  delay(duration);
+  analogWrite(AudioPin, 0);
+}
 
 
 
@@ -31,6 +38,11 @@ void load_prg(const uint8_t *data, uint16_t len) {
   uint8_t lo = end & 0xff, hi = end >> 8;
   write6502(0x2d, lo); write6502(0x2f, lo); write6502(0x31, lo); write6502(0xae, lo);
   write6502(0x2e, hi); write6502(0x30, hi); write6502(0x32, hi); write6502(0xaf, hi);
+  write6502(addr_keybuf+0,'R');
+  write6502(addr_keybuf+1,'U');
+  write6502(addr_keybuf+2,'N');
+  write6502(addr_keybuf+3,13);
+  write6502(addr_keybuf_len,4);
 }
 
 
@@ -39,7 +51,8 @@ unsigned char charROM [] = { 0x1C , 0x22 , 0x4A , 0x56 , 0x4C , 0x20 , 0x1E , 0x
 
 uint8_t screenmem[1000];
 uint8_t colormem[1000];
-uint8_t RAM[16384];
+uint8_t *RAM = NULL;
+#define RAM_size 16384
 uint8_t BOARDER;
 uint8_t BGCOLOR;
 uint8_t VIC_D020;
@@ -151,8 +164,9 @@ ESP8266WiFiMulti WiFiMulti;
 
 void setup() {
   system_update_cpu_freq(FREQUENCY);
+  beep(440,100);
   keyboard.begin(PS2DataPin, PS2IRQpin, PS2Keymap_German_c64);
-  delay(500);
+  delay(1000);
   debug = keyboard.available() && keyboard.readUnicode() == HOTKEY_ESC;
   Serial.begin(115200);
   Serial.println("\r\n\r\nDebug mode, ESP ID: " + String(ESP.getChipId(), HEX));
@@ -161,20 +175,43 @@ void setup() {
     WiFi.mode(WIFI_STA);
     WiFiMulti.addAP(WIFI_SSID, WIFI_PSK);
     WiFi.hostname("ESP8266-" + String(ESP.getChipId(), HEX));
+    ArduinoOTA.onStart([]() {
+      debug = true;
+      if(RAM) free(RAM);
+      Serial.println("OTA starting...");
+      Serial.flush();
+      Serial.end();
+      });
     ArduinoOTA.begin();
+    beep(880,1000);
 #endif
   } else {
     WiFi.forceSleepBegin();             
     delay(1);
+    RAM=(uint8_t*)malloc(RAM_size);
     videoinit();
     reset6502();
+    beep(220,50);
   }
 }
 
-void loop() {  
-  if (!debug) {
-    exec6502(100);
+void loop() {
+#if defined(WIFI_SSID) && defined(WIFI_PSK)
+  if (debug) {
+    if (!wifi_connected && WiFiMulti.run() == WL_CONNECTED) {
+      Serial.print("IP address: ");
+      Serial.println(WiFi.localIP());
+      wifi_connected = true;
+    }
+    ArduinoOTA.handle();
+    if ( keyboard.available() && keyboard.readUnicode() == HOTKEY_SCROLL ) {
+      ESP.restart();
+    }
+    yield();
+    return;
   }
+#endif
+  exec6502(100);
   if (keyboard.available()) {
     char c = keyboard.readUnicode();
     if (debug) {
@@ -208,15 +245,4 @@ void loop() {
       write6502(addr_keybuf,c);
     }
   }
-#if defined(WIFI_SSID) && defined(WIFI_PSK)
-  if (debug) {
-    if (!wifi_connected && WiFiMulti.run() == WL_CONNECTED) {
-      Serial.print("IP address: ");
-      Serial.println(WiFi.localIP());
-      wifi_connected = true;
-    }
-    ArduinoOTA.handle();
-    yield();
-  }
-#endif
 }

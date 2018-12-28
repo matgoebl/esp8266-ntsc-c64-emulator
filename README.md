@@ -5,10 +5,10 @@ Original author: Jan Ostman.
 Published November 12, 2018 on https://www.hackster.io/janost/esp8266-ntsc-c64-emulator-b91a35 under GPL3+.
 
 Enhancements by Matthias Goebl at https://github.com/matgoebl/esp8266-ntsc-c64-emulator/
-- PS/2 keyboard input with hotkeys for reset and serial debugging
+- PS/2 keyboard input with hotkeys for reset (press scroll-lock) and serial debugging
 - Cursor display
-- Wifi and OTA update
-- Load compiled-in PRGs
+- Wifi and OTA update (press scroll-lock for reset, followed by escape within one second to enter OTA mode)
+- Load compiled-in PRGs (press F9 to load and run a hello-world basic program)
 
 ## How to compile-in PRGs
 - create e.g. hello-world.bas

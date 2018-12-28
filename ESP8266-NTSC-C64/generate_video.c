@@ -358,7 +358,27 @@ void ICACHE_FLASH_ATTR videoinit() {
 }
 
 void ICACHE_FLASH_ATTR videostop() {
-  ets_isr_mask(1<<ETS_SLC_INUM);
+        //Reset I2S subsystem
+        CLEAR_PERI_REG_MASK(I2SCONF,I2S_I2S_RESET_MASK);
+        SET_PERI_REG_MASK(I2SCONF,I2S_I2S_RESET_MASK);
+        CLEAR_PERI_REG_MASK(I2SCONF,I2S_I2S_RESET_MASK);
+
+        ///disable DMA intr in cpu
+        ets_isr_mask(1<<ETS_SLC_INUM);
+
+        //Clear int
+        SET_PERI_REG_MASK(I2SINT_CLR,   I2S_I2S_TX_REMPTY_INT_CLR|I2S_I2S_TX_WFULL_INT_CLR|
+                          I2S_I2S_RX_WFULL_INT_CLR|I2S_I2S_PUT_DATA_INT_CLR|I2S_I2S_TAKE_DATA_INT_CLR);
+        CLEAR_PERI_REG_MASK(I2SINT_CLR, I2S_I2S_TX_REMPTY_INT_CLR|I2S_I2S_TX_WFULL_INT_CLR|
+                            I2S_I2S_RX_WFULL_INT_CLR|I2S_I2S_PUT_DATA_INT_CLR|I2S_I2S_TAKE_DATA_INT_CLR);
+
+        //Reset DMA
+        SET_PERI_REG_MASK(SLC_CONF0, SLC_RXLINK_RST|SLC_TXLINK_RST);
+        CLEAR_PERI_REG_MASK(SLC_CONF0, SLC_RXLINK_RST|SLC_TXLINK_RST);
+
+        //Clear DMA int flags
+        SET_PERI_REG_MASK(SLC_INT_CLR,  0xffffffff);
+        CLEAR_PERI_REG_MASK(SLC_INT_CLR,  0xffffffff);
 }
 
 
