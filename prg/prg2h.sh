@@ -14,10 +14,6 @@
  hello-world.bas \
  hello-world.bas \
  
- 
-#BAS=hello-world.bas mini-tetris_v2.bas print10.bas
-#PRG=Compo2017.prg GorillaX_12.prg last-outpost.prg tetrispd.prg mazo.prg bitcoinminer.prg
-
 n=1
 for f in "$@"; do
  echo "$n. $f"
