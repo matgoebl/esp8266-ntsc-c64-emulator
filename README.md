@@ -14,22 +14,24 @@ Enhancements by Matthias Goebl at https://github.com/matgoebl/esp8266-ntsc-c64-e
 ## Limitations
 
 This simple emulator is a proof-of-concept.
-It only emulates the 6502 CPU of a C64 with basic video output for [https://en.wikipedia.org/wiki/PETSCII](PETSCII) characters.
-It lacks emulation of the [https://en.wikipedia.org/wiki/MOS_Technology_6582](SID chip) for sound output and
-the [https://en.wikipedia.org/wiki/MOS_Technology_VIC](VIC chip) for sprites and graphics output.
-It provides only 16KB of RAM (C64 has 64KB), it shows 14335 basic bytes free (C64: 38911 bytes free).
+
+It only emulates the 6502 CPU of a C64 with basic video output for [PETSCII](https://en.wikipedia.org/wiki/PETSCII) characters.  
+It lacks emulation of the [SID chip](https://en.wikipedia.org/wiki/MOS_Technology_6582) for sound output and
+the [VIC chip](https://en.wikipedia.org/wiki/MOS_Technology_VIC) for sprites and graphics output.  
+It provides only 16KB of RAM (C64 has 64KB), it shows 14335 basic bytes free (C64: 38911 bytes free).  
 There is no joystick support, only keyboard input into the basic keyboard buffer,
-so many assembly programs that access hardware keyboard registers wont work.
+so many assembly programs that access hardware keyboard registers wont work.  
 Therefore it is only usable for short commodore basic programs with PETSCII output and no PEEKs and POKEs.
 
 
 ## Demonstration programs
 
-When looking for suitable demonstration programs, I found the [http://gkanold.wixsite.com/homeputerium/basic-10liners-2018](BASIC 10Liners contest):
-It allows only short basic programs with no assembler and limited POKEs.
-I found several programs with keyboard input and PETSCII output.
-I added my selection into the [prg/](folder prg/).
-The set is automatically built into the emulator and quickly loaded by pressing function keys (shift + F1..F12)
+When looking for suitable demonstration programs, I found the [BASIC 10Liners contest](http://gkanold.wixsite.com/homeputerium/basic-10liners-2018):
+- It allows only short basic programs with no assembler and limited POKEs.
+- I found several programs with keyboard input and PETSCII output.
+
+I added my selection into the [folder prg/](prg/).
+The set is automatically built into the emulator and quickly loaded by pressing function keys (shift + F1..F12).  
 The license of the 10liners is unclear, the authors only agreed on publication of the source code
 ("The programmers agree to a publication of the programs, the descriptions and the instructions by the organizer").
 
@@ -37,11 +39,11 @@ The license of the 10liners is unclear, the authors only agreed on publication o
 ## How to compile-in PRGs
 
 - create e.g. hello-world.bas
-- compile basic source into token: `petcat -w2 -o hello-world.prg hello-world.bas` (petcat comes with [http://vice-emu.sourceforge.net/](VICE))
+- compile basic source into token: `petcat -w2 -o hello-world.prg hello-world.bas` (petcat comes with [VICE](http://vice-emu.sourceforge.net/)
 - convert binary into a C include file: `xxd -i hello-world.prg > hello-world.h`
 - adapt hello-world.h: change `unsigned char` into `const PROGMEM unsigned char`
 
-This is automatically performed by the script [prg/prg2h.sh], that creates [ESP8266-NTSC-C64/builtinprg_X.h].
+This is automatically performed by the script `prg/prg2h.sh`, that creates `ESP8266-NTSC-C64/builtinprg_X.h`.
 
 
 ## Keyboard layout
@@ -57,12 +59,12 @@ This is automatically performed by the script [prg/prg2h.sh], that creates [ESP8
 
 ## Builtin PRGs
 
-1. Hello World
+### 1. Hello World
 
 What else :-)
 
 
-2. 10 Print
+### 2. 10 Print
 
 A one-liner that prints a labyrinth. [https://10print.org/](more)
 
@@ -84,6 +86,7 @@ The following arduino esp8266 packages are needed:
 - PS2Keyboard
 
 PS2Keyboard requires a small fix: Add the following lines to `packages/esp8266/hardware/esp8266/2.4.2/variants/generic/common.h`:
+
     #ifndef CORE_INT_EVERY_PIN
     #define CORE_INT_EVERY_PIN
     #endif /* CORE_INT_EVERY_PIN */
