@@ -3,14 +3,28 @@ const int PS2DataPin = D3;
 const int PS2IRQpin  = D2;
 const int AudioPin = D1;
 #include "wifi_credentials.h"
+
 #define FREQUENCY    160   
 #include "ESP8266WiFi.h"
 #include <ESP8266WiFiMulti.h>
 #include <ArduinoOTA.h>
 #include <PS2Keyboard.h>
 
-#include "prg/hello-world.h"
-
+#define BUILTIN_PRGS
+#ifdef BUILTIN_PRGS
+#include "builtinprg_1.h"
+#include "builtinprg_2.h"
+#include "builtinprg_3.h"
+#include "builtinprg_4.h"
+#include "builtinprg_5.h"
+#include "builtinprg_6.h"
+#include "builtinprg_7.h"
+#include "builtinprg_8.h"
+#include "builtinprg_9.h"
+#include "builtinprg_10.h"
+#include "builtinprg_11.h"
+#include "builtinprg_12.h"
+#endif  /* BUILTIN_PRGS */
 
 extern "C" {
 #include "user_interface.h"
@@ -89,6 +103,19 @@ PS2Keyboard keyboard;
 #define C64_INSERT       148
 #define C64_LEFT         157
 
+#define HOTKEY_P1        224
+#define HOTKEY_P2        225
+#define HOTKEY_P3        226
+#define HOTKEY_P4        227
+#define HOTKEY_P5        228
+#define HOTKEY_P6        229
+#define HOTKEY_P7        230
+#define HOTKEY_P8        231
+#define HOTKEY_P9        232
+#define HOTKEY_P10       233
+#define HOTKEY_P11       234
+#define HOTKEY_P12       235
+
 #define HOTKEY_F9        248
 #define HOTKEY_F10       249
 #define HOTKEY_F11       250
@@ -118,8 +145,8 @@ const PROGMEM PS2Keymap_t PS2Keymap_German_c64 = {
   HOTKEY_F11, '+', '3', '-', '*', '9', HOTKEY_SCROLL, 0,
   0, 0, 0, C64_F7 },
   // with shift
-  {0, HOTKEY_F9, 0, C64_F5, C64_F3, C64_F1, C64_F2, HOTKEY_F12,
-  0, HOTKEY_F10, C64_F8, C64_F6, C64_F4, C64_STOP /*PS2_TAB*/, PS2_DEGREE_SIGN, 0,
+  {0, HOTKEY_P9, 0, HOTKEY_P5, HOTKEY_P3, HOTKEY_P1, HOTKEY_P2, HOTKEY_P12,
+  0, HOTKEY_P10, HOTKEY_P8, HOTKEY_P6, HOTKEY_P4, C64_STOP /*PS2_TAB*/, PS2_DEGREE_SIGN, 0,
   0, 0 /*Lalt*/, 0 /*Lshift*/, 0, 0 /*Lctrl*/, 'q', '!', 0,
   0, 0, 'y', 's', 'a', 'w', '"', 0,
   0, 'c', 'x', 'd', 'e', '$', PS2_SECTION_SIGN, 0,
@@ -133,9 +160,9 @@ const PROGMEM PS2Keymap_t PS2Keymap_German_c64 = {
   0, '>', 0, 0, 0, 0, C64_DELETE /*PS2_BACKSPACE*/, 0,
   0, '1', 0, '4', '7', 0, 0, 0,
   '0', '.', '2', '5', '6', '8', HOTKEY_SHIFT_ESC, HOTKEY_NUMLOCK /*NumLock*/,
-  HOTKEY_F11, '+', '3', '-', '*', '9', HOTKEY_SCROLL, 0,
-  0, 0, 0, C64_F7 },
-  1,
+  HOTKEY_P11, '+', '3', '-', '*', '9', HOTKEY_SCROLL, 0,
+  0, 0, 0, HOTKEY_P7 },
+  0, // don't use altgr any more, because EPS crashes (not yet analyzed why)
   // with altgr
   {0, HOTKEY_F9, 0, C64_F5, C64_F3, C64_F1, C64_F2, HOTKEY_F12,
   0, HOTKEY_F10, C64_F8, C64_F6, C64_F4, C64_RUN /*PS2_TAB*/, 0, 0,
@@ -157,7 +184,7 @@ const PROGMEM PS2Keymap_t PS2Keymap_German_c64 = {
 };
 
 
-bool debug=false;
+bool ota_mode = false;
 bool wifi_connected=false;
 
 ESP8266WiFiMulti WiFiMulti;
@@ -167,16 +194,15 @@ void setup() {
   beep(440,100);
   keyboard.begin(PS2DataPin, PS2IRQpin, PS2Keymap_German_c64);
   delay(1000);
-  debug = keyboard.available() && keyboard.readUnicode() == HOTKEY_ESC;
+  ota_mode = keyboard.available() && keyboard.readUnicode() == HOTKEY_ESC;
   Serial.begin(115200);
   Serial.println("\r\n\r\nDebug mode, ESP ID: " + String(ESP.getChipId(), HEX));
-  if (debug) {
-#if defined(WIFI_SSID) && defined(WIFI_PSK)
+  if (ota_mode) {
     WiFi.mode(WIFI_STA);
     WiFiMulti.addAP(WIFI_SSID, WIFI_PSK);
     WiFi.hostname("ESP8266-" + String(ESP.getChipId(), HEX));
     ArduinoOTA.onStart([]() {
-      debug = true;
+      ota_mode = true;
       if(RAM) free(RAM);
       Serial.println("OTA starting...");
       Serial.flush();
@@ -184,7 +210,6 @@ void setup() {
       });
     ArduinoOTA.begin();
     beep(880,1000);
-#endif
   } else {
     WiFi.forceSleepBegin();             
     delay(1);
@@ -196,27 +221,29 @@ void setup() {
 }
 
 void loop() {
-#if defined(WIFI_SSID) && defined(WIFI_PSK)
-  if (debug) {
+  if (ota_mode) {
     if (!wifi_connected && WiFiMulti.run() == WL_CONNECTED) {
       Serial.print("IP address: ");
       Serial.println(WiFi.localIP());
       wifi_connected = true;
+      beep(880,100);
     }
     ArduinoOTA.handle();
-    if ( keyboard.available() && keyboard.readUnicode() == HOTKEY_SCROLL ) {
-      ESP.restart();
+    if (keyboard.available()) {
+      char c = keyboard.readUnicode();
+      Serial.println("Key: " + String(c, DEC));
+      if ( c  == HOTKEY_SCROLL ) {
+        ESP.restart();
+      }
     }
     yield();
     return;
   }
-#endif
+
   exec6502(100);
+
   if (keyboard.available()) {
     char c = keyboard.readUnicode();
-    if (debug) {
-      Serial.println("Key: " + String(c, DEC));
-    }
 
     if (c == PS2_UPARROW) {
       c = C64_UP;
@@ -231,15 +258,54 @@ void loop() {
     if (c == HOTKEY_SCROLL) {
       videostop();
       ESP.restart();
-    } else if (c == HOTKEY_ESC) {
-      nmi6502();
+    } else if (c == HOTKEY_ESC || c == C64_STOP) {
+      //nmi6502();
+      write6502(addr_STKEY,STKEY_stop);
+      exec6502(1000);
+      write6502(addr_STKEY,STKEY_none);
     } else if (c == HOTKEY_SHIFT_ESC) {
       reset6502();
+#ifdef BUILTIN_PRGS
+    } else if (c == HOTKEY_P1) {
+      load_prg(builtinprg_1_prg,builtinprg_1_prg_len);
+    } else if (c == HOTKEY_P2) {
+      load_prg(builtinprg_2_prg,builtinprg_2_prg_len);
+    } else if (c == HOTKEY_P3) {
+      load_prg(builtinprg_3_prg,builtinprg_3_prg_len);
+    } else if (c == HOTKEY_P4) {
+      load_prg(builtinprg_4_prg,builtinprg_4_prg_len);
+    } else if (c == HOTKEY_P5) {
+      load_prg(builtinprg_5_prg,builtinprg_5_prg_len);
+    } else if (c == HOTKEY_P6) {
+      load_prg(builtinprg_6_prg,builtinprg_6_prg_len);
+    } else if (c == HOTKEY_P7) {
+      load_prg(builtinprg_7_prg,builtinprg_7_prg_len);
+    } else if (c == HOTKEY_P8) {
+      load_prg(builtinprg_8_prg,builtinprg_8_prg_len);
+    } else if (c == HOTKEY_P9) {
+      load_prg(builtinprg_9_prg,builtinprg_9_prg_len);
+    } else if (c == HOTKEY_P10) {
+      load_prg(builtinprg_10_prg,builtinprg_10_prg_len);
+    } else if (c == HOTKEY_P11) {
+      load_prg(builtinprg_11_prg,builtinprg_11_prg_len);
+    } else if (c == HOTKEY_P12) {
+      load_prg(builtinprg_12_prg,builtinprg_12_prg_len);
+#endif  /* BUILTIN_PRGS */
+
     } else if (c == HOTKEY_F9) {
-        load_prg(hello_world_prg,hello_world_prg_len);
+      write6502(addr_keybuf+0,'R');
+      write6502(addr_keybuf+1,'U');
+      write6502(addr_keybuf+2,'N');
+      write6502(addr_keybuf+3,13);
+      write6502(addr_keybuf_len,4);
     } else if (c == HOTKEY_F10) {
-    } else if (c == HOTKEY_F11) {
-    } else if (c == HOTKEY_F12) {
+      write6502(addr_keybuf+0,'L');
+      write6502(addr_keybuf+1,'I');
+      write6502(addr_keybuf+2,'S');
+      write6502(addr_keybuf+3,'T');
+      write6502(addr_keybuf+4,13);
+      write6502(addr_keybuf_len,4);
+
     } else {
       write6502(addr_keybuf_len,1);
       write6502(addr_keybuf,c);
