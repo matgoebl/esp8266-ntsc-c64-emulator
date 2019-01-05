@@ -1,0 +1,4 @@
+This game is a simple Bomber clone.
+Your bomber jet is damaged and unfortunately no clear landing area is about. While you're
+slowly falling bomb the rocks to get a clear landing. Press SPACE to drop a bomb. You need
+all the ground clear to win!

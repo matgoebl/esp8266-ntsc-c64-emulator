@@ -1,0 +1,144 @@
+--- Egg collector ---
+
+Written by Sander Alsema for the 10-liner competition 2018.
+Language: Commodore 64 Basic v2
+Category: PUR-80
+
+
+I prefer VICE, but you can use any emulator that works with *.d64 files.
+If you haven't installed it yet, it can be downloaded from their website.
+
+Here's how to use it:
+ Click : File -> Attach disk image -> Drive 8
+ Select: Egg collector.d64
+ Click : Attach
+
+Now, just as you would with a normal Commodore 64, you can type:
+ LOAD"$",8             (to load the directory)
+ LOAD"EGG COLLECTOR",8 (to load the game)
+ LIST                  (to view the directory or game listing)
+ RUN                   (to run the game)
+
+Be aware that you are now using a virtual Commodore 64 keyboard.
+Therefore the keys will differ slightly from your physical keyboard.
+Use <SHIFT> '2' to display quotation marks.
+
+---
+
+In this game you work on a farm, and it's your job to collect freshly laid
+goose eggs. The goose, however, is loose!!! It will not come down from the
+ceiling, but continues to lay eggs. You have no other option but to try to
+catch them in a little nest.
+
+You can move the nest:
+ to the left by pressing  '<'
+ to the right by pressing '>'
+
+If you move the nest offscreen, it will reappear in the center.
+
+When you have dropped five eggs, the game is over.
+
+---
+
+Line 0: Clear the horizontal and vertical 'orientation' strings.
+
+        Make sure that a clear screen is the first thing that is displayed.
+
+        Build the orientation strings with cursor movements, right and down.
+
+        Set the nest to begin in the center.
+
+        Set the goose to begin in the center.
+
+        Set the goose's destination to begin in the same place.
+
+        No eggs falling yet.
+
+        Clear the number of eggs caught.
+
+
+Line 1: Read the goose-string and the clear-goose-string from somewhere
+        else in the program to make efficient use of available space.
+
+        Clear the number of eggs dropped.
+
+        Set the border colour to purple.
+
+        Set the background colour to blue.
+
+
+Line 2: Build the 'position' string for the nest, by making use of parts of
+        the orientation strings.
+
+        Build the 'position' string for the goose, by making use of parts
+        of the orientation strings.
+
+        Clear the old goose.
+
+        Display the new goose.
+
+        Display the nest. (without carriage return)
+
+
+Line 3: If the goose has reached its destination:
+
+        - Randomly choose a new destination.
+
+        - If no egg is currently falling then start laying an egg.
+
+        - If five eggs have been dropped, then jump to line 9.
+
+
+Line 4: If the falling egg has reached the level of the nest, and the nest
+        is actually there:
+
+        - Stop the egg from falling.
+
+        - Clear the egg.
+
+        - Increase the number of eggs caught.
+
+
+Line 5: If the egg is falling:
+
+        - Display the egg, by making use of parts of the orientation
+          strings. (without carriage return)
+
+        - The next egg will be one screen line lower.
+
+        - If the egg has reached the bottom, then stop the egg from
+          falling and increase the number of eggs dropped.
+
+
+Line 6: Read the keyboard.
+
+        If the pressed key was ',' or '.' (meaning '<' or '>'):
+
+        - Clear the nest.
+
+        - Calculate the new position of the nest using the ascii value of
+          the pressed key.
+
+        - If the nest goes offscreen then reposition it in the center.
+
+
+Line 7: If the goose is not at its destination, then move one step towards
+        it.
+
+
+Line 8: Set the position string for clearing the old goose to the current
+        position string of the goose.
+
+        Jump to line 2.
+
+        This line also holds the data for the goose string and its clearing
+        string.
+
+
+Line 9: Display "GAME OVER" and the number of eggs caught.
+
+        Wait a little while.
+
+        Restart the game.
+
+---

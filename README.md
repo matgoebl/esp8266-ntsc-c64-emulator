@@ -24,60 +24,6 @@ so many assembly programs that access hardware keyboard registers wont work.
 Therefore it is only usable for short commodore basic programs with PETSCII output and no PEEKs and POKEs.
 
 
-## Demonstration programs
-
-When looking for suitable demonstration programs, I found the [BASIC 10Liners contest](http://gkanold.wixsite.com/homeputerium/basic-10liners-2018):
-- It allows only short basic programs with no assembler and limited POKEs.
-- I found several programs with keyboard input and PETSCII output.
-
-I added my selection into the [folder prg/](prg/).
-The set is automatically built into the emulator and quickly loaded by pressing function keys (shift + F1..F12).  
-The license of the 10liners is unclear, the authors only agreed on publication of the source code
-("The programmers agree to a publication of the programs, the descriptions and the instructions by the organizer").
-
-
-## How to compile-in PRGs
-
-- create e.g. hello-world.bas
-- compile basic source into token: `petcat -w2 -o hello-world.prg hello-world.bas` (petcat comes with [VICE](http://vice-emu.sourceforge.net/)
-- convert binary into a C include file: `xxd -i hello-world.prg > hello-world.h`
-- adapt hello-world.h: change `unsigned char` into `const PROGMEM unsigned char`
-
-This is automatically performed by the script `prg/prg2h.sh`, that creates `ESP8266-NTSC-C64/builtinprg_X.h`.
-
-
-## Keyboard layout
-
-| Key         | Function       |
-|-------------|----------------|
-| Scroll-lock | ESP full reset |
-| Shift-Esc   | C64 reset      |
-| Esc         | Stop           |
-| Tab         | Run            |
-| Shift-F1 .. Shift-F12 | Load builtin PRG #1 .. #12 |
-
-
-## Builtin PRGs
-
-### 1. Hello World
-
-What else :-)
-
-
-### 2. 10 Print
-
-A one-liner that prints a labyrinth. [https://10print.org/](more)
-
-
-
-## OTA mode
-
-Add your wifi ssid and psk to `wifi_credentials.h`.
-Press escape within 1 second after ESP full reset (power-on or scroll-lock).
-ESP will then enter wifi OTA mode.
-Press scroll-lock again to boot to C64 mode.
-
-
 ## Used libraries
 
 The following arduino esp8266 packages are needed:
@@ -90,6 +36,38 @@ PS2Keyboard requires a small fix: Add the following lines to `packages/esp8266/h
     #ifndef CORE_INT_EVERY_PIN
     #define CORE_INT_EVERY_PIN
     #endif /* CORE_INT_EVERY_PIN */
+
+
+## OTA mode
+
+Add your wifi ssid and psk to `wifi_credentials.h`.
+Press escape within 1 second after ESP full reset (power-on or shift-escape).
+ESP will then enter wifi OTA mode.
+Press shift-escape again to boot to C64 mode.
+
+
+## Keyboard layout
+
+| Key         | Function       |
+|-------------|----------------|
+| Scroll-lock | Pause on/off   |
+| Esc         | C64 reset      |
+| Shift-Esc   | ESP full reset |
+| Tab         | Run            |
+| Shift-Tab   | Stop           |
+| Shift-F1 .. Shift-F12 | Load builtin PRG #1 .. #12 |
+
+
+## How to compile-in PRGs
+
+- create e.g. hello-world.bas
+- compile basic source into token: `petcat -w2 -o hello-world.prg hello-world.bas` (petcat comes with [VICE](http://vice-emu.sourceforge.net/)
+- convert binary into a C include file: `xxd -i hello-world.prg > hello-world.h`
+- adapt hello-world.h: change `unsigned char` into `const PROGMEM unsigned char`
+
+For extracting PRGs from a D64 file use `c1541 -attach *.d64 -extract`.
+
+This is automatically performed by the script `prg/prg2h.sh`, that creates `ESP8266-NTSC-C64/builtinprg_X.h`.
 
 
 ## Hardware circuitry
@@ -118,3 +96,110 @@ Audio output is so far only used for beep output at startup, no SID emulation ye
 
     GND -------#####---------||----- ESP D1
             Mini-Speaker     4u7
+
+
+
+## Builtin PRGs for demonstation
+
+
+When looking for suitable demonstration programs, I found the [BASIC 10Liners contest](http://gkanold.wixsite.com/homeputerium/basic-10liners-2018):
+- It allows only short basic programs with no assembler and limited POKEs.
+- I found several programs with keyboard input and PETSCII output.
+
+There is no well-known open source license given for the 10liners, however the authors agreed on publication of the source code.
+
+I added my selection of working games into the [folder prg/](prg/).  
+This set is automatically built into the emulator and quickly loaded by pressing function keys (shift + F1..F12).  
+
+
+
+### 1. 10 Print
+
+A one-liner that prints a labyrinth. [https://10print.org/](more)
+
+
+### 2. Mini Tetris
+
+by marcosj, Buenos Aires, Argentina
+
+Keys: A S D
+
+posted on https://www.lemon64.com/forum/viewtopic.php?t=30998 ( public domain according to [gamebase64](http://www.gamebase64.com/game.php?id=24258&d=45) )
+
+edited: changed `rnd(0)` to `rnd(1)`
+
+
+### 3. Snake
+
+by Davide Fichera @Naufr4g0 (assumed, as this is also available [here](goo.gl/JGWFqs) pointed from https://twitter.com/naufr4g0
+
+Keys: A D
+
+Downloaded from [basic 10liners 2016 for C64](http://gkanold.wixsite.com/homeputerium/blog) and [NOMAM2016 Dropbox](https://www.dropbox.com/sh/vigwx5pko1mbies/AAAH81tgcGzhhUlHEakmUXS6a/C64)
+
+
+### 4. GorillaX
+
+by Davide Fichera @Naufr4g0
+
+Keys: enter number, return
+
+Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/games-list-2017) and [Dropbox](https://www.dropbox.com/sh/6osm1dr46eev4wj/AABCwVsPRGhMffYNZyAAT8e-a/C64)
+
+
+### 5. Beer Hunter
+
+by Sander Alsema
+
+Keys: , . space
+
+Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/games-list-2017) and [Dropbox](https://www.dropbox.com/sh/6osm1dr46eev4wj/AABCwVsPRGhMffYNZyAAT8e-a/C64)
+
+
+### 6. Bomber
+
+by Georg "Endurion" Rottensteiner
+
+Keys: Space
+
+Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
+
+
+### 7. Last Outpost
+
+by 5ace
+
+Keys: Left Right
+
+Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
+
+
+### 8. Duck!!!
+
+by Sander Alsema
+
+Keys: J D
+
+Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
+
+
+### 9. Egg Collector
+
+by Sander Alsema
+
+Keys: , .
+
+Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
+
+
+### 10. EasterShip
+
+by Logiker
+
+Keys: none, just watch demo
+
+
+### 11. Hello World
+
+just to fill empty slots.
+

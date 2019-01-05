@@ -1,0 +1,131 @@
+--- Duck!!! ---
+
+Written by Sander Alsema for the 10-liner competition 2018.
+Language: Commodore 64 Basic v2
+Category: PUR-80
+
+
+I prefer VICE, but you can use any emulator that works with *.d64 files.
+If you haven't installed it yet, it can be downloaded from their website.
+
+Here's how to use it:
+ Click : File -> Attach disk image -> Drive 8
+ Select: Duck!!!.d64
+ Click : Attach
+
+Now, just as you would with a normal Commodore 64, you can type:
+ LOAD"$",8             (to load the directory)
+ LOAD"DUCK!!!",8       (to load the game)
+ LIST                  (to view the directory or game listing)
+ RUN                   (to run the game)
+
+Be aware that you are now using a virtual Commodore 64 keyboard.
+Therefore the keys will differ slightly from your physical keyboard.
+Use <SHIFT> '2' to display quotation marks.
+
+---
+
+In this game you have to help a little duckling dodge cannon balls, while
+it's trying to cross the screen.
+Every time you successfully dodge a cannon ball, the duckling will move a
+step forward, giving you less reaction time to dodge the next one.
+If the duckling gets hit, you lose the game. If the duckling reaches the
+finish however, you win!
+
+To dodge:
+ Press 'J' to jump.
+ Press 'D' to duck.
+
+Unlike games that are in an infinite loop, where you just score points
+until you die, this game actually has a victory condition.
+This means you can win and feel really proud of what you have accomplished!
+
+---
+
+Line 0: Read two strings from a data statement elsewhere in the program, to
+        make efficient use of the available program space.
+        These strings will be used to form the 'image' strings.
+
+        Clear the screen and display the start and finish markers in white.
+
+
+Line 1: Create the jump-image-string by adding two empty screen lines under
+        the duckling.
+
+        Create the stand-image-string by adding two empty screen lines
+        above the duckling.
+
+        Create the duck-image-string by adding three empty screen lines
+        above part of the duckling, omitting the leg screen line.
+
+        Set screen color to green.
+
+        Bring the cursor to its starting position.
+
+
+Line 2: Set the horizontal position of the cannon ball to the right of the
+        Screen.
+
+        Calculate the screen memory position using the vertical position
+        of the cannon ball, chosen at random from four possible screen
+        lines.
+
+        Clear the jump/duck timer.
+
+        Set the display-string to the stand-image-string.
+
+        Check to see if the horizonal position of the cursor has reached
+        the finish. If so then set the victory message and jump to line 9.
+
+
+Line 3: Display the display-string and return the cursor to its original
+        position.
+
+        Set the color of the cannon ball to black.
+
+        Display the cannon ball.
+
+        Check to see if the screen position to the left of the cannon ball
+        is blank. If not then clear the victory message and jump to line 9.
+
+
+Line 4: Read the keyboard.
+
+        If 'J' was pressed and the timer was not yet set, then set the
+        timer to six iterations and set the display-string to the
+        jump-image-string.
+
+
+Line 5: If 'D' was pressed and the timer was not yet set, then set the
+        timer to six iterations and set the display-string to the
+        duck-image-string.
+
+
+Line 6: If the timer is set, then decrease the timer. If in doing so the
+        timer has cleared, then set the display-string to the
+        stand-image-string.
+
+
+Line 7: Clear the old cannon ball position.
+
+        Set the new cannon ball position to the left.
+
+        If the cannon ball has reached the left of the screen, then move
+        the cursor (and therefore the duckling) to the right and jump to
+        line 2.
+
+
+Line 8: Jump to line 3.
+
+        This line also contains the data for the duckling-string and the
+        empty-screen-line-string.
+
+
+Line 9: Clear the screen, display 'GAME OVER' in orange and the victory
+        message (if any) in purple.
+
+        Wait for a while.
+
+        Restart the game.
+
+---

@@ -1,0 +1,18 @@
+https://www.lemon64.com/forum/viewtopic.php?t=30998
+
+marcosj
+Location: Buenos Aires, Argentina
+
+Posted: Thu Aug 13, 2009 3:31 am    Post subject: Really tiny Basic Tetris
+
+Some months ago I wrote this Tetris in C64's Basic with the goal beeing to fit the listing in a single screen. 
+After some maniac optimization work I achieved it, so the next goal was to make it a full tetris (that means, it needs to show the next piece in a corner). This was no easy, but painfully it worked. But it still was very slow, so then I optimized for speed, and lose some precious space and needed more damn optimizacion to get it. 
+
+So, this is it, enjoy it. At some point I suffered a lot doing it, but I'm kinda proud of this little unusefull crap. 
+
+You command it from keyboard (it used the joystick, but the peek to the CIA and the ANDs wasted a lot of space, and also there is no joystick buffer so some inputs were lost).  
+A: to move to the left  
+D: move to the rigth  
+S: rotate  
+
+MARCOS

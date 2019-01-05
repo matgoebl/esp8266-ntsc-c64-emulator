@@ -1106,6 +1106,8 @@ uint8_t read6502(uint16_t address) {
   if ((address >= 0xA000)&&(address < 0xC000)) return pgm_read_byte_near(BIOS+(address - 0xA000));//BASIC ROM
   if (address >= 0xE000) return pgm_read_byte_near(BIOS+(address - 0xC000));   //KERNAL ROM
   if ((address >= 0xD000)&&(address < 0xD800)) return(0);                      //VIC2 and SID
+static int i=0; i++;
+  if ((address >= 0xDC08)&&(address < 0xDC0C)) return(i&0xf);             //CIA 1: DC08-DC0B HH:MM:SS.0s
   if (address < RAM_SIZE) return(RAM[address]);                                //free RAM for user  
 }
 

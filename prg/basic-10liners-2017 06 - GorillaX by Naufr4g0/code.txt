@@ -1,0 +1,10 @@
+0 deffng(x)=int(j)=a(p):readg,t$(0),t$(1),d$,r,z,p$:print"{clear}":f=180:e=251:n=rnd(0)*.02-.01
+1 t=1024:w=int(rnd(1)*5)+2:on-(o+w>39)goto3:h=int(rnd(1)*12):fory=24-hto24:q=t+y*g+o
+2 forx=0tow:pokeq+x,e+26*(x=0):next:next:w(b)=w:h(b)=h:x(b)=o:o=o+w+1:b=b+1:h=z:goto1:data40
+3 s=rnd(1)*b/2:d=b-rnd(1)*b/2:a(0)=x(s)+1:a(1)=x(d)+w(d):b(0)=23-h(s):b(1)=23-h(d)
+4 fori=0to1:poket+b(i)*g+a(i),86:next:print"{home}"int(n*1000+.5)tab(16)s(0)"-"s(1):datawins,scores
+5 print"{home}"tab(20*p);:input"{down*2}ang";w:printtab(20*p);:input"str";s:j=a(p)+.5:k=b(p)-.5:data"{home}{down*2}"
+6 fori=rtoz:pokei,32:next:u=cos(w*{pi}/f)*s/80*(1+2*(p=1)):v=-sin(w*{pi}/f)*s/80:data1104,1183
+7 j=j+u:u=u+n:k=k+v:v=v+.02:pokeh,32:on-(j<0orj>g)goto9:h=t+int(k)*g+j:a=1-a:dataplayer
+8 c=peek(h):pokeh,g+a:on-(c=32)goto7:ifc=86thenm=p-fng(0)and1:s(m)=s(m)+1:o=0:b=0:l=s(m)<3
+9 p=1-p:fori=rtoz:pokei,32:next:on-(o>0)goto5:print"{reverse on}"d$tab(12)p$m+1t$(-l):wait198,1:restore:iflgoto

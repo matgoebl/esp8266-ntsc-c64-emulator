@@ -185,7 +185,9 @@ const PROGMEM PS2Keymap_t PS2Keymap_German_c64 = {
 
 
 bool ota_mode = false;
-bool wifi_connected=false;
+bool wifi_connected = false;
+bool pause = false;
+uint8_t pausebuf=0;
 
 ESP8266WiFiMulti WiFiMulti;
 
@@ -232,7 +234,7 @@ void loop() {
     if (keyboard.available()) {
       char c = keyboard.readUnicode();
       Serial.println("Key: " + String(c, DEC));
-      if ( c  == HOTKEY_SCROLL ) {
+      if ( c  == HOTKEY_SHIFT_ESC ) {
         ESP.restart();
       }
     }
@@ -240,7 +242,9 @@ void loop() {
     return;
   }
 
-  exec6502(100);
+  if (!pause) {
+    exec6502(100);
+  }
 
   if (keyboard.available()) {
     char c = keyboard.readUnicode();
@@ -255,15 +259,24 @@ void loop() {
       c = C64_RIGHT;
     }
     
-    if (c == HOTKEY_SCROLL) {
+
+    if (c == HOTKEY_SHIFT_ESC) {
       videostop();
       ESP.restart();
-    } else if (c == HOTKEY_ESC || c == C64_STOP) {
+    } else if (c == HOTKEY_SCROLL) {
+      pause = !pause;
+      if (pause) {
+        pausebuf = screenmem[0];
+        screenmem[0] = 144; // [P]
+      } else {
+        screenmem[0] = pausebuf;
+      }
+    } else if (c == C64_STOP) {
       //nmi6502();
       write6502(addr_STKEY,STKEY_stop);
       exec6502(1000);
       write6502(addr_STKEY,STKEY_none);
-    } else if (c == HOTKEY_SHIFT_ESC) {
+    } else if (c == HOTKEY_ESC) {
       reset6502();
 #ifdef BUILTIN_PRGS
     } else if (c == HOTKEY_P1) {

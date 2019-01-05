@@ -1,0 +1,109 @@
+--- BEERHUNTER ---
+
+Written by Sander Alsema for the 10-liner competition 2017.
+Language: Commodore 64 Basic v2
+Category: PUR-80
+
+
+I prefer VICE, but you can use any emulator that works with *.d64 files.
+If you haven't installed it yet, it can be downloaded from their website.
+
+Here's how to use it:
+ Click : - File
+         - Attach disk image -> Drive 8
+ Select: Beerhunter.d64
+ Click : Attach
+
+Now, just as you would with a normal Commodore 64, you can type:
+ LOAD"$",8                (to load the directory)
+ LOAD"BEERHUNTER",8       (to load the BEERHUNTER game)
+ LOAD"BEERHUNTER(LONG)",8 (to load the LONGVERSION of the BEERHUNTER game)
+ LIST                     (to view the directory or game listing)
+ RUN                      (to run the game)
+
+Be aware that you are now using a virtual Commodore 64 keyboard.
+Therefore the keys will differ slightly from your physical keyboard:
+use <SHIFT> '2' to display quotation marks.
+use <SHIFT> '8' to display '('.
+use <SHIFT> '9' to display ')'.
+
+---
+
+BEERHUNTER is a shooter game for alcoholics.
+
+A glass of beer descends from the top of the screen.
+Your task is to intercept it before it reaches the bottom:
+ - If you succeed, you will score a pint (instead of a point).
+ - If you fail, you will lose a liver (instead of a live).
+
+The game automatically restarts when all livers are gone.
+
+You can move your hunter to the left and to the right with the '<' and '>' keys.
+You can fire with the <SPACE> bar.
+
+Only one shot can be fired at a time.
+
+---
+
+In this program I used SYS-statements to position the cursor.
+However, I did NOT write the machine language routine they call.
+It is already present in memory when the computer is turned on.
+
+
+Line 0: Define a string that displays a glass of beer.
+	Define a string that erases a glass of beer.
+	Begin with 3 livers.
+	Horizontally position the hunter in the middle.
+	Use a variable to access screen memory to reduce code elsewhere.
+	Begin with zero pints.
+	Use a variable to access background colour memory to reduce code elsewhere.
+
+Line 1: Position the glass of beer in the top middle of the screen.
+	Set the horizontal position it moves to.
+	Set the direction it moves in.
+	Shot has not been fired yet (FALSE).
+	Set character colour to green and clear screen.
+	Set background and border colour to black.
+	Set repeat function for all keys.
+	If all livers gone then restart.
+
+Line 2: Position cursor to X and Y values.
+	Display glass of beer.
+	Remember the X and Y values.
+	Display game status (pints and livers).
+
+Line 3: If the glass of beer has reached the horizontal destination then:
+	- Pick a new horizontal destination at random.
+	- Find out in what direction that is.
+	- Move 1 step down.
+	- If the bottom has been reached then decrease livers and jump to line 1.
+
+Line 4: Move towards horizontal destination.
+	Read the keyboard.
+	If key is ',' or '.' then:
+	- Clear the hunter.
+	- Move hunter to the left or the right, depending on key pressed.
+
+Line 5: If key is <SPACE> bar and shot is NOT fired then:
+	- Shot is fired (TRUE).
+	- Set missile coordinates above hunter.
+
+Line 6: If shot is fired and area above missile is not clear then:
+	- Shot is not fired (FALSE).
+	- Increase pints.
+	- Jump to line 1.
+
+Line 7: If shot is fired then:
+	- Clear missile position.
+	- Move missile up.
+	- Display missile.
+	- If missile has reached the top then:
+	  - Shot is not fired anymore (FALSE).
+	  - Clear final missile position.
+
+Line 8: Make sure the hunter does not go beyond the borders of the screen.
+
+Line 9: Position cursor to old X and Y values, remembered in line 2.
+	Erase the glass of beer.
+	Display the hunter on the bottom of the screen.
+	Jump to line 2.
