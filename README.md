@@ -48,6 +48,10 @@ Press shift-escape again to boot to C64 mode.
 
 ## Keyboard layout
 
+I used an old PS/2 keyboard with a german layout, for other layouts you have to adapt `PS2Keymap_German_c64`.
+
+The following keys have a special function:
+
 | Key         | Function       |
 |-------------|----------------|
 | Scroll-lock | Pause on/off   |
@@ -65,9 +69,9 @@ Press shift-escape again to boot to C64 mode.
 - convert binary into a C include file: `xxd -i hello-world.prg > hello-world.h`
 - adapt hello-world.h: change `unsigned char` into `const PROGMEM unsigned char`
 
-For extracting PRGs from a D64 file use `c1541 -attach *.d64 -extract`.
-
 This is automatically performed by the script `prg/prg2h.sh`, that creates `ESP8266-NTSC-C64/builtinprg_X.h`.
+
+For extracting PRGs from a D64 file use `c1541 -attach *.d64 -extract`.
 
 
 ## Hardware circuitry
@@ -162,7 +166,7 @@ by Georg "Endurion" Rottensteiner
 
 Keys: Space
 
-Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
+Downloaded from [basic 10liners 2018 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
 
 
 ### 7. Last Outpost
@@ -171,7 +175,7 @@ by 5ace
 
 Keys: Left Right
 
-Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
+Downloaded from [basic 10liners 2018 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
 
 
 ### 8. Duck!!!
@@ -180,7 +184,7 @@ by Sander Alsema
 
 Keys: J D
 
-Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
+Downloaded from [basic 10liners 2018 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
 
 
 ### 9. Egg Collector
@@ -189,7 +193,7 @@ by Sander Alsema
 
 Keys: , .
 
-Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
+Downloaded from [basic 10liners 2018 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
 
 
 ### 10. EasterShip
@@ -197,6 +201,8 @@ Downloaded from [basic 10liners 2017 for C64](http://gkanold.wixsite.com/homeput
 by Logiker
 
 Keys: none, just watch demo
+
+Downloaded from [basic 10liners 2018 for C64](http://gkanold.wixsite.com/homeputerium/kopie-von-games-list-2018-work) and [Dropbox](https://www.dropbox.com/sh/uufbtdvy6ipqds3/AAAaM_yW_Ifyk_EqFkeNtLDCa/C64)
 
 
 ### 11. Hello World
